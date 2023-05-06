@@ -1,5 +1,10 @@
 #include <Keypad.h>  // Tuş takımı için kütüphane
 #include <DHT.h>     // Nem sensörü için kütüphane
+#include <Wire.h>    // I2C kütüphanesi
+#include <LiquidCrystal_I2C.h>   // I2C LCD kütüphanesi
+
+// I2C adresi ve satır/sütun sayısı tanımlama
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Tuş takımı tanımlamaları
 const byte ROWS = 4;
@@ -27,16 +32,22 @@ const int relayPin = 2;
 DHT dht(humiditySensorPin, DHTTYPE);
 
 // Şifre tanımlama
-const char* password = "123456";
+const char* password = "341453";
 
 void setup() {
+  
+  lcd.init();       // LCD ekranını başlatma
+  lcd.backlight();  // Arka aydınlatmayı açma
+  lcd.setCursor(0, 0);  // İlk satıra gitme
+  lcd.print("ALKOV SİSTEMİ");  // Yazıyı yazdırma
+
   pinMode(relayPin, OUTPUT);  // Röle pinini çıkış olarak ayarlama
   digitalWrite(relayPin, LOW);  // Röleyi kapalı konumda başlatma
 
   Serial.begin(9600);  // Seri haberleşme başlatma
   dht.begin();         // Nem sensörünü başlatma
 
-  Serial.println("Enter password:");  // Şifre girişine hazır olma mesajı
+  Serial.println("Sifre giris:");  // Şifre girişine hazır olma mesajı
 }
 
 void loop() {
@@ -49,7 +60,9 @@ void loop() {
       passwordIndex++;
       if (passwordIndex == strlen(password)) {
         passwordCorrect = true;
-        Serial.println("Password correct");
+        Serial.println("sifre dogru");      
+        lcd.setCursor(0, 1);  // İlk satıra gitme
+        lcd.print("Giris basarili");  // Yazıyı yazdırma
       }
     } else {
       passwordIndex = 0;
@@ -64,7 +77,13 @@ void loop() {
   // Role'ü açma
   if (distance < 60 && humidity > 20 && gas < 200 && passwordCorrect) {
     digitalWrite(relayPin, HIGH);
-    Serial.println("Relay opened");
-    passwordCorrect = false; // Röle kapatıldıktan sonra şifreyi sıfırlama
+    Serial.println("Role acildi");
+    lcd.setCursor(0, 1);  // İlk satıra gitme
+    lcd.print("Araba calisabilir");  // Yazıyı yazdırma
+    //passwordCorrect = false; // Röle kapatıldıktan sonra şifreyi sıfırlama
+  }
+  else{
+    lcd.setCursor(0, 1);  // İlk satıra gitme
+    lcd.print("Giris basarisiz");  // Yazıyı yazdırma
   }
 }

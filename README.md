@@ -1,5 +1,6 @@
 # ALKOV
-Alkolü Kovan ALKOV
+Alkolü Kovan ALKOV - KGS TEKNOLOJİ 
+https://kgs.infinityfreeapp.com
 
 Araçların sürücüler tarafından alkollü ilen çalıştırılmasının önüne geçen bir araç içine entegre modüldür.
 
